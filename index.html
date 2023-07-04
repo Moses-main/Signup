@@ -1,6 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+
   <title>Signup Page</title>
   <style>
     body {
@@ -59,56 +64,58 @@
     }
   </style>
 </head>
+
 <body>
   <div class="container">
     <h1>Signup</h1>
-  
+
     <form>
       <label for="email">Email:</label>
       <input type="email" id="email" name="email" placeholder="Enter your email" required>
-    
+
       <label for="phone">Phone:</label>
       <div>
         <select id="country-code" required>
           <option value="">Select Country</option>
           <!-- Country options will be dynamically added -->
         </select>
-        <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required>
+        <input type="tel" id="phone" name="phone" pattern="[1-9]{1}[0-9]{9}" placeholder="Enter your phone number" required>
         <span id="flag-container"></span>
       </div>
-    
+
       <input type="submit" value="Signup">
     </form>
   </div>
 
-  <script src="countries.json"></script>
-  <script>
+  <script type="module">
+    import countriesData from "./countries.json" assert {type: "json"};
     const countryCodeSelect = document.getElementById('country-code');
     const phoneInput = document.getElementById('phone');
     const flagContainer = document.getElementById('flag-container');
-    
-    countryCodeSelect.addEventListener('input', () => {
+ 
+    countryCodeSelect.addEventListener('change', () => {
       const selectedCountry = countryCodeSelect.value;
+
       if (selectedCountry.length >= 2) {
+        console.log(selectedCountry);
         fetchFlagIcon(selectedCountry);
       } else {
         flagContainer.innerHTML = '';
       }
     });
-    
-    phoneInput.addEventListener('input', () => {
-      countryCodeSelect.value = '';
-      flagContainer.innerHTML = '';
-    });
-    
+    // phoneInput.addEventListener('input', () => {
+    //   countryCodeSelect.value = '';
+    //   flagContainer.innerHTML = '';
+    // });
+
     function fetchFlagIcon(countryCode) {
       flagContainer.innerHTML = 'Loading...';
-      
-      const country = countryData.find(item => item.code === countryCode);
+
+      const country = countriesData.find(item => item.code === countryCode);
       if (country) {
-        const flagUrl = country.flag;
+        const flagUrl = country.code;
         if (flagUrl) {
-          flagContainer.innerHTML = `<img class="flag-icon" src="${flagUrl}">`;
+          flagContainer.innerHTML = `<img class="flag-icon" src="./flags/${flagUrl.toLowerCase()}.png">`;
         } else {
           flagContainer.innerHTML = '';
         }
@@ -116,17 +123,17 @@
         flagContainer.innerHTML = '';
       }
     }
-    
+
     // Populate country options from JSON file
-    const countryData = countries;
     const countrySelect = document.getElementById('country-code');
-    
-    countryData.forEach(country => {
+
+    countriesData.forEach(country => {
       const option = document.createElement('option');
       option.value = country.code;
-      option.textContent = `+${country.dialCode} (${country.name})`;
+      option.textContent = `${country.dial_code} (${country.name})`;
       countrySelect.appendChild(option);
     });
   </script>
 </body>
+
 </html>
