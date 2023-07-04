@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Signup Page</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: teal;
+      color: white;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 400px;
+      margin: 50px auto;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: teal;
+    }
+
+    form {
+      margin-top: 30px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+      color: teal;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid teal;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .flag-icon {
+      width: 20px;
+      height: 15px;
+      margin-right: 5px;
+    }
+
+    .error {
+      color: red;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Signup</h1>
+  
+    <form>
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" placeholder="Enter your email" required>
+    
+      <label for="phone">Phone:</label>
+      <div>
+        <select id="country-code" required>
+          <option value="">Select Country</option>
+          <!-- Country options will be dynamically added -->
+        </select>
+        <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required>
+        <span id="flag-container"></span>
+      </div>
+    
+      <input type="submit" value="Signup">
+    </form>
+  </div>
+
+  <script src="countries.json"></script>
+  <script>
+    const countryCodeSelect = document.getElementById('country-code');
+    const phoneInput = document.getElementById('phone');
+    const flagContainer = document.getElementById('flag-container');
+    
+    countryCodeSelect.addEventListener('input', () => {
+      const selectedCountry = countryCodeSelect.value;
+      if (selectedCountry.length >= 2) {
+        fetchFlagIcon(selectedCountry);
+      } else {
+        flagContainer.innerHTML = '';
+      }
+    });
+    
+    phoneInput.addEventListener('input', () => {
+      countryCodeSelect.value = '';
+      flagContainer.innerHTML = '';
+    });
+    
+    function fetchFlagIcon(countryCode) {
+      flagContainer.innerHTML = 'Loading...';
+      
+      const country = countryData.find(item => item.code === countryCode);
+      if (country) {
+        const flagUrl = country.flag;
+        if (flagUrl) {
+          flagContainer.innerHTML = `<img class="flag-icon" src="${flagUrl}">`;
+        } else {
+          flagContainer.innerHTML = '';
+        }
+      } else {
+        flagContainer.innerHTML = '';
+      }
+    }
+    
+    // Populate country options from JSON file
+    const countryData = countries;
+    const countrySelect = document.getElementById('country-code');
+    
+    countryData.forEach(country => {
+      const option = document.createElement('option');
+      option.value = country.code;
+      option.textContent = `+${country.dialCode} (${country.name})`;
+      countrySelect.appendChild(option);
+    });
+  </script>
+</body>
+</html>
